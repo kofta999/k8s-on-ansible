@@ -1,0 +1,20 @@
+- name: "Ensure kubernetes yum repository is added"
+  ansible.builtin.yum_repository:
+    name: "kubernetes"
+    description: "kubernetes"
+    baseurl: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/rpm/"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/rpm/repodata/repomd.xml.key"
+    exclude: ["kubelet", "kubeadm", "kubectl", "cri-tools", "kubernetes-cni"]
+
+- name: "Ensure kubernetes is installed"
+  ansible.builtin.dnf:
+    name: ["kubelet", "kubeadm", "kubectl"]
+    disable_excludes: "kubernetes"
+
+- name: "Ensure kubelet service is enabled and running"
+  service:
+    name: "kubelet"
+    state: started
+    enabled: true

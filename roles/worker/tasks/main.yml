@@ -1,0 +1,15 @@
+- name: "Check if node has already joined the cluster"
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: "Join node to the cluster"
+  become: true
+  ansible.builtin.command:
+    cmd: "{{ hostvars['localhost']['kubeadm_join_cmd'] }}"
+  when: not kubelet_conf.stat.exists
+
+- name: "Request master to label this node as a worker"
+  ansible.builtin.command:
+    cmd: "kubectl label node {{ ansible_hostname }} node-role.kubernetes.io/worker=worker --overwrite=true"
+  delegate_to: "{{ groups['masters'][0] }}"

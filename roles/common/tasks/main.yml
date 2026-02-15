@@ -1,0 +1,25 @@
+# TODO: Leave it on and allow necessary ports
+- name: "Ensure firewalld is disabled"
+  service:
+    name: "firewalld"
+    enabled: false
+    state: stopped
+
+- name: "Ensure swap is disabled"
+  import_tasks: "./swap.yml"
+
+- name: "Ensure ipv4 forwarding is enabled"
+  ansible.builtin.sysctl:
+    name: "net.ipv4.ip_forward"
+    value: "1"
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.conf
+
+- name: "Ensure SELinux is set to permissive"
+  ansible.posix.selinux:
+    state: permissive
+    policy: targeted
+
+- name: "Ensure kubernetes is installed"
+  import_tasks: "./k8s.yml"

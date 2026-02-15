@@ -1,0 +1,9 @@
+- name: "Capture join command"
+  command: "kubeadm token create --print-join-command"
+  register: "join_cmd"
+
+- name: "Set join command as a global fact on localhost"
+  set_fact:
+    kubeadm_join_cmd: "{{ join_cmd.stdout }}"
+  delegate_to: "localhost"
+  delegate_facts: true

@@ -1,0 +1,14 @@
+- name: "Check if Kubernetes cluster is already initalized"
+  stat:
+    path: "/etc/kubernetes/admin.conf"
+  register: kubeadmin_conf_stat
+
+- name: "Copy kubeadm config to master host"
+  copy:
+    src: "./files/kubeadm-config.yml"
+    dest: "/home/ansible/kubeadm-config.yml"
+  when: not kubeadmin_conf_stat.stat.exists
+
+- name: "Ensure kubeadm is initialized"
+  command: "sudo kubeadm init --config=/home/ansible/kubeadm-config.yml"
+  when: not kubeadmin_conf_stat.stat.exists

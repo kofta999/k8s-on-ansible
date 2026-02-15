@@ -1,0 +1,16 @@
+- hosts: all
+  roles:
+    - role: common
+  tasks:
+    # - name: "SSH initialization"
+    #   import_tasks: "./tasks/init-ssh.yml"
+
+- hosts: master
+  gather_facts: false
+  roles:
+    - role: master
+
+- hosts: workers
+  gather_facts: false
+  roles:
+    - role: worker
