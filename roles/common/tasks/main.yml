@@ -1,10 +1,3 @@
-# TODO: Leave it on and allow necessary ports
-- name: "Ensure firewalld is disabled"
-  service:
-    name: "firewalld"
-    enabled: false
-    state: stopped
-
 - name: "Ensure swap is disabled"
   import_tasks: "./swap.yml"
 

@@ -7,6 +7,7 @@
   copy:
     src: "./files/kubeadm-config.yml"
     dest: "/home/ansible/kubeadm-config.yml"
+    mode: 644
   when: not kubeadmin_conf_stat.stat.exists
 
 - name: "Ensure kubeadm is initialized"

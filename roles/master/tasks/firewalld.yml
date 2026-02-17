@@ -1,0 +1,13 @@
+- name: Ensure firewalld service is enabled and running
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Ensure kubernetes control node ports are open
+  firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop: "{{ control_node_fw_ports }}"

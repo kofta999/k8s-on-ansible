@@ -1,8 +1,11 @@
- # - name: "Set DNS name"
+# - name: "Set DNS name"
 #   ansible.builtin.lineinfile:
 #     path: "/etc/hosts"
 #     # TODO Fetch ip directly using vars
 #     line: "192.168.122.10 cluster-endpoint"
+
+- name: "Ensure firewalld is configured"
+  import_tasks: "./firewalld.yml"
 
 - name: "Initalize kubeadm"
   import_tasks: "./init-kubeadm.yml"
@@ -15,4 +18,3 @@
 
 - name: "Export join commands for workers"
   import_tasks: "./export-join-cmd.yml"
-

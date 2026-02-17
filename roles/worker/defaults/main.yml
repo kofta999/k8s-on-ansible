@@ -1,3 +1,5 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for worker
+worker_fw_ports:
+  - 10250/tcp
+  - 10256/tcp
+  - 30000-32767/tcp
+  - 30000-32767/udp

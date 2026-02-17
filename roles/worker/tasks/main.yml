@@ -1,3 +1,6 @@
+- name: "Ensure firewalld is configured"
+  import_tasks: "./firewalld.yml"
+
 - name: "Check if node has already joined the cluster"
   ansible.builtin.stat:
     path: /etc/kubernetes/kubelet.conf
