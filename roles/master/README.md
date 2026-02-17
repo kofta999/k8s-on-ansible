@@ -1,38 +1,36 @@
-Role Name
-=========
+# Ansible Role: Kubernetes Master
 
-A brief description of the role goes here.
+This role initializes the Kubernetes control plane on the designated master node.
 
-Requirements
-------------
+## Tasks
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Configures the firewall (`firewalld`) to open ports required for the control plane.
+- Initializes the cluster using `kubeadm init`.
+- Copies the `admin.conf` file to the connecting user's home directory (`~/.kube/config`) so they can immediately use `kubectl`.
+- Deploys the Calico CNI for pod networking.
+- Creates and exports the `kubeadm join` command for worker nodes to use.
 
-Role Variables
---------------
+## Requirements
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- This role must be run on a node that has already had the `common` role applied to it.
+- A RHEL-based distribution (e.g., CentOS, Rocky Linux).
 
-Dependencies
-------------
+## Role Variables
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Variables used by this role, with their default values from `defaults/main.yml`:
 
-Example Playbook
-----------------
+| Variable                | Default Value             | Description                                            |
+| ----------------------- | ------------------------- | ------------------------------------------------------ |
+| `control_node_fw_ports` | (see `defaults/main.yml`) | A list of ports to open on the master node's firewall. |
+| `tigera_operator_url`   | `https://.../v3.27.2/...` | URL for the Tigera Operator manifest for Calico.       |
+| `custom_resources_url`  | `https://.../v3.27.2/...` | URL for the Calico custom resources manifest.          |
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+_Note: It is highly recommended to manage the Calico manifest URLs as variables._
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Example Playbook
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+- hosts: master
+  roles:
+    - role: master
+```
