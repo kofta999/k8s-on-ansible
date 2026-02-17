@@ -2,6 +2,37 @@
 
 This project uses Ansible to deploy a basic, production-ready Kubernetes cluster on RHEL-based systems (e.g., CentOS, Rocky Linux). It sets up a single control-plane node and multiple worker nodes.
 
+## Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph "Ansible Control Node"
+        P[Playbook]
+    end
+
+    subgraph "Target Nodes"
+        M[Master Node]
+        W1[Worker Node 1]
+        W2[Worker Node 2]
+    end
+
+    P -- "Applies 'common' role" --> M
+    P -- "Applies 'common' role" --> W1
+    P -- "Applies 'common' role" --> W2
+    
+    P -- "Applies 'master' role (init)" --> M
+    P -- "Applies 'worker' role (join)" --> W1
+    P -- "Applies 'worker' role (join)" --> W2
+
+    W1 -- "Joins Cluster" --> M
+    W2 -- "Joins Cluster" --> M
+
+    style P fill:#f9f,stroke:#333,stroke-width:2px
+    style M fill:#bbf,stroke:#333,stroke-width:2px
+    style W1 fill:#bfb,stroke:#333,stroke-width:2px
+    style W2 fill:#bfb,stroke:#333,stroke-width:2px
+```
+
 ## Features
 
 - Deploys a single-master Kubernetes cluster.
