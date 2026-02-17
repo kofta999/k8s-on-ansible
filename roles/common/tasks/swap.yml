@@ -5,8 +5,11 @@
 
 - name: "Ensure swap is disabled permenentally in /etc/fstab"
   become: true
-  replace:
-    path: "/etc/fstab"
-    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
-    replace: '# \1'
+  ansible.posix.mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
     backup: true
+  with_items:
+    - none
+    - swap

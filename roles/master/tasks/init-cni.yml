@@ -1,7 +1,7 @@
 - name: "Apply tigera-operator manifest"
   ansible.builtin.command:
-    cmd: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/tigera-operator.yaml
+    cmd: kubectl apply -f {{ tigera_operator_url }}
 
 - name: "Apply Calico custom resources"
   ansible.builtin.command:
-    cmd: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/custom-resources.yaml
+    cmd: kubectl apply -f {{ custom_resources_url }}
