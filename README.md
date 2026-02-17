@@ -19,7 +19,7 @@ graph TD
     P -- "Applies 'common' role" --> M
     P -- "Applies 'common' role" --> W1
     P -- "Applies 'common' role" --> W2
-    
+
     P -- "Applies 'master' role (init)" --> M
     P -- "Applies 'worker' role (join)" --> W1
     P -- "Applies 'worker' role (join)" --> W2
@@ -55,8 +55,8 @@ graph TD
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url>
-    cd <repository-directory>
+    git clone https://github.com/kofta999/k8s-on-ansible
+    cd k8s-on-ansible
     ```
 
 2.  **Install Ansible Dependencies:**
@@ -70,7 +70,7 @@ graph TD
     Edit the `inventory.ini` file to match your environment. Add the IP addresses or hostnames of your master and worker nodes under the appropriate groups.
 
     ```ini
-    [master]
+    [masters]
     192.168.122.10
 
     [workers]

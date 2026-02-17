@@ -1,6 +1,7 @@
 - name: "Ensure swap is disabled for current session"
+  become: true
   ansible.builtin.command:
-    cmd: "sudo swapoff -a"
+    cmd: "swapoff -a"
   when: ansible_facts['swaptotal_mb'] > 0
   changed_when: ansible_facts['swaptotal_mb'] > 0
 
@@ -11,6 +12,6 @@
     fstype: swap
     state: absent
     backup: true
-  with_items:
+  loop:
     - none
     - swap

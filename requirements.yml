@@ -1,2 +1,6 @@
 roles:
   - src: geerlingguy.containerd
+
+collections:
+  - name: ansible.posix
+  - name: community.general

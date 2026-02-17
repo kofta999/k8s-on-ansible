@@ -1,11 +1,8 @@
-# - name: "Set DNS name"
-#   ansible.builtin.lineinfile:
-#     path: "/etc/hosts"
-#     # TODO Fetch ip directly using vars
-#     line: "192.168.122.10 cluster-endpoint"
-
-- name: "Ensure firewalld is configured"
-  import_tasks: "./firewalld.yml"
+- name: "Ensure firewalld is configured for control plane"
+  include_tasks:
+    file: "{{ role_path }}/../common/tasks/configure_firewalld.yml"
+  vars:
+    fw_ports: "{{ control_node_fw_ports }}"
 
 - name: "Initalize kubeadm"
   import_tasks: "./init-kubeadm.yml"

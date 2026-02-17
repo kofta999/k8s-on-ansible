@@ -2,9 +2,6 @@
   become: true
   roles:
     - role: common
-  # tasks:
-  # - name: "SSH initialization"
-  #   import_tasks: "./tasks/init-ssh.yml"
 
 - hosts: masters
   roles:

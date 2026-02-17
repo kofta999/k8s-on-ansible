@@ -1,5 +1,8 @@
-- name: "Ensure firewalld is configured"
-  import_tasks: "./firewalld.yml"
+- name: "Ensure firewalld is configured for worker"
+  ansible.builtin.include_tasks:
+    file: "{{ role_path }}/../common/tasks/configure_firewalld.yml"
+  vars:
+    fw_ports: "{{ worker_fw_ports }}"
 
 - name: "Check if node has already joined the cluster"
   ansible.builtin.stat:

@@ -12,4 +12,4 @@
     state: enabled
     permanent: true
     immediate: true
-  loop: "{{ worker_fw_ports }}"
+  loop: "{{ fw_ports }}"
