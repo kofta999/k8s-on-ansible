@@ -22,5 +22,5 @@ docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | 
 
 # Used only for RedHat/CentOS/Fedora.
 docker_yum_repo_url: https://download.docker.com/linux/{{ (ansible_distribution == "Fedora") | ternary("fedora","centos") }}/docker-ce.repo
-docker_yum_repo_enable_nightly: '0'
+docker_yum_repo_enable_nightly: "0"
 docker_yum_gpg_key: https://download.docker.com/linux/centos/gpg

@@ -1,7 +1,11 @@
 - name: "Apply tigera-operator manifest"
   ansible.builtin.command:
     cmd: kubectl apply -f {{ tigera_operator_url }}
+  register: cmd_result
+  changed_when: "'configured' not in cmd_result.stdout"
 
 - name: "Apply Calico custom resources"
   ansible.builtin.command:
     cmd: kubectl apply -f {{ custom_resources_url }}
+  register: cmd_result
+  changed_when: "'configured' not in cmd_result.stdout"

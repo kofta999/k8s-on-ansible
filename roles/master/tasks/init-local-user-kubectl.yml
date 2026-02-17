@@ -1,9 +1,7 @@
-- name: "Create .kube directory for {{ ansible_user }} user"
+- name: "Create .kube directory for current user"
   ansible.builtin.file:
     path: "~/.kube"
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
     mode: "0755"
   register: kube_dir
 

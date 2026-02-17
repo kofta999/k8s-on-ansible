@@ -1,7 +1,8 @@
 - name: "Ensure swap is disabled for current session"
-  command: "sudo swapoff -a"
-  when: ansible_swaptotal_mb > 0
-  changed_when: ansible_swaptotal_mb > 0
+  ansible.builtin.command:
+    cmd: "sudo swapoff -a"
+  when: ansible_facts['swaptotal_mb'] > 0
+  changed_when: ansible_facts['swaptotal_mb'] > 0
 
 - name: "Ensure swap is disabled permenentally in /etc/fstab"
   become: true

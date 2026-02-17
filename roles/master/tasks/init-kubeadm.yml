@@ -6,10 +6,11 @@
 - name: "Copy kubeadm config to master host"
   copy:
     src: "./files/kubeadm-config.yml"
-    dest: "{{ ansible_user_dir }}/kubeadm-config.yml"
+    dest: "{{ ansible_facts['user_dir'] }}/kubeadm-config.yml"
     mode: 644
   when: not kubeadmin_conf_stat.stat.exists
 
 - name: "Ensure kubeadm is initialized"
-  command: "sudo kubeadm init --config={{ ansible_user_dir }}/kubeadm-config.yml"
+  ansible.builtin.command:
+    cmd: "sudo kubeadm init --config={{ ansible_user_dir }}/kubeadm-config.yml"
   when: not kubeadmin_conf_stat.stat.exists
