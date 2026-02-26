@@ -5,6 +5,15 @@
     state: started
     enabled: true
 
+- name: Enable masquerade
+  become: true
+  firewalld:
+    masquerade: true
+    state: enabled
+    permanent: true
+    immediate: true
+  notify: reload firewalld
+
 - name: Ensure kubernetes control node ports are open
   become: true
   firewalld:
@@ -13,3 +22,11 @@
     permanent: true
     immediate: true
   loop: "{{ fw_ports }}"
+  notify: reload firewalld
+
+- name: "Allow IP-in-IP protocol for Calico"
+  become: true
+  ansible.builtin.command:
+    cmd: firewall-cmd --permanent --add-rich-rule='rule protocol value="4" accept'
+  notify: reload firewalld
+  changed_when: true

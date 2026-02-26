@@ -1,6 +1,6 @@
 - name: "Capture join command"
   ansible.builtin.command:
-    cmd: "kubeadm token create --ttl 1h --print-join-command"
+    cmd: "kubeadm token create --ttl 2h --print-join-command"
   register: "join_cmd"
 
 - name: "Set join command as a global fact on localhost"

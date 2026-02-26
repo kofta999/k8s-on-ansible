@@ -9,5 +9,10 @@
     state: permissive
     policy: targeted
 
+- name: "Ensure firewalld is configured"
+  import_tasks: "./configure_firewalld.yml"
+  vars:
+    fw_ports: "{{ common_fw_ports }}"
+
 - name: "Ensure kubernetes is installed"
   import_tasks: "./k8s.yml"

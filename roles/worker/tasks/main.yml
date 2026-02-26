@@ -27,4 +27,4 @@
 - name: "Ensure that labelling succeeded on at least one master"
   fail:
     msg: "Failed to label the node from any of the master nodes"
-  when: (label_results.results | select('succeeded') | list | length) == 0
+  when: (label_results.results | selectattr('failed', 'equalto', false) | list | length) == 0
