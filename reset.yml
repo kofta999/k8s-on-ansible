@@ -1,0 +1,79 @@
+---
+# =============================================================================
+# reset.yml — Run k8s-reset.sh across all cluster nodes via Ansible
+# Usage: ansible-playbook reset.yml
+# Workers are reset first, then master (safer ordering)
+# =============================================================================
+
+- hosts: workers
+  become: true
+  serial: 1                  # Reset workers one at a time
+  gather_facts: false
+  tasks:
+    - name: "Copy reset script to worker node"
+      ansible.builtin.copy:
+        src: k8s-reset.sh
+        dest: /tmp/k8s-reset.sh
+        mode: "0700"
+
+    - name: "Run reset script on worker"
+      ansible.builtin.command:
+        cmd: /tmp/k8s-reset.sh
+      register: reset_output
+      failed_when: false      # Don't abort if partially uninitialised
+
+    - name: "Show reset output"
+      ansible.builtin.debug:
+        msg: "{{ reset_output.stdout_lines }}"
+
+    - name: "Clean up reset script"
+      ansible.builtin.file:
+        path: /tmp/k8s-reset.sh
+        state: absent
+
+- hosts: masters
+  become: true
+  gather_facts: false
+  tasks:
+    - name: "Copy reset script to master node"
+      ansible.builtin.copy:
+        src: k8s-reset.sh
+        dest: /tmp/k8s-reset.sh
+        mode: "0700"
+
+    - name: "Run reset script on master"
+      ansible.builtin.command:
+        cmd: /tmp/k8s-reset.sh
+      register: reset_output
+      failed_when: false
+
+    - name: "Show reset output"
+      ansible.builtin.debug:
+        msg: "{{ reset_output.stdout_lines }}"
+
+    - name: "Clean up reset script"
+      ansible.builtin.file:
+        path: /tmp/k8s-reset.sh
+        state: absent
+
+    - name: "Prompt to reboot (optional)"
+      ansible.builtin.debug:
+        msg: >
+          Reset complete on all nodes.
+          It is strongly recommended to reboot all nodes before re-running
+          the cluster setup playbook:
+            ansible-playbook -i inventory.ini reboot.yml
+            ansible-playbook -i inventory.ini playbook.yml
+
+# Optional: uncomment the play below to also reboot all nodes after reset.
+# Rebooting ensures kernel modules, sysctl params, and MTU changes are
+# fully cleared and re-applied cleanly by Ansible on next run.
+
+# - hosts: all
+#   become: true
+#   gather_facts: false
+#   tasks:
+#     - name: "Reboot all nodes"
+#       ansible.builtin.reboot:
+#         reboot_timeout: 120
+#         msg: "Rebooting after Kubernetes cluster reset"
