@@ -18,16 +18,19 @@
     replace: "10.244.0.0/16"
 
 - name: "Apply tigera-operator manifest"
+  become: false
   ansible.builtin.command:
     cmd: kubectl apply -f {{ tigera_operator_url }}
   register: cmd_result
   changed_when: "'configured' not in cmd_result.stdout"
 
 - name: "Wait for tigera-operator to be ready before applying CRs"
+  become: false
   ansible.builtin.command:
     cmd: kubectl rollout status deployment tigera-operator -n tigera-operator --timeout=120s
 
 - name: "Apply patched Calico custom resources"
+  become: false
   ansible.builtin.command:
     cmd: kubectl apply -f /tmp/calico-custom-resources.yml
   register: cmd_result

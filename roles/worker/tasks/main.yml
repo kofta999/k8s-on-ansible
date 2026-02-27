@@ -1,8 +1,12 @@
+- name: "Gather service facts"
+  ansible.builtin.service_facts:
+
 - name: "Ensure firewalld is configured for worker"
   ansible.builtin.include_tasks:
     file: "{{ role_path }}/../common/tasks/configure_firewalld.yml"
   vars:
     fw_ports: "{{ worker_fw_ports }}"
+  when: "'firewalld.service' in ansible_facts.services"
 
 - name: "Check if node has already joined the cluster"
   ansible.builtin.stat:
@@ -17,7 +21,7 @@
 
 - name: "Request master to label this node as a worker"
   ansible.builtin.command:
-    cmd: "kubectl label node {{ ansible_facts['hostname'] }} node-role.kubernetes.io/worker=worker --overwrite=true"
+    cmd: "kubectl label node {{ ansible_facts['fqdn'] }} node-role.kubernetes.io/worker=worker --overwrite=true"
   register: label_results
   changed_when: "'not labeled' not in label_results.stdout"
   delegate_to: "{{ item }}"

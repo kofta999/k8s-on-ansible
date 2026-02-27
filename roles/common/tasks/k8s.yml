@@ -8,9 +8,13 @@
     gpgkey: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/rpm/repodata/repomd.xml.key"
     exclude: ["kubelet", "kubeadm", "kubectl", "cri-tools", "kubernetes-cni"]
 
-- name: "Ensure kubernetes is installed"
+- name: "Ensure kubernetes packages are installed"
   ansible.builtin.dnf:
-    name: ["kubelet", "kubeadm", "kubectl"]
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - cri-tools
     disable_excludes: "kubernetes"
 
 - name: "Check containerd config"

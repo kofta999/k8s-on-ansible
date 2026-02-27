@@ -1,6 +1,6 @@
 - name: "Create .kube directory for current user"
   ansible.builtin.file:
-    path: "~/.kube"
+    path: "/home/{{ ansible_user }}/.kube"
     state: directory
     mode: "0755"
   register: kube_dir
@@ -11,5 +11,21 @@
     src: /etc/kubernetes/admin.conf
     dest: "{{ kube_dir.path }}/config"
     owner: "{{ ansible_user }}"
+    mode: "0644"
+    remote_src: true
+
+- name: "Create .kube directory for root"
+  ansible.builtin.file:
+    path: "/root/.kube"
+    state: directory
+    mode: "0755"
+  register: root_kube_dir
+
+- name: "Copy admin.conf to admin's .kube directory"
+  become: true
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ root_kube_dir.path }}/config"
+    owner: "root"
     mode: "0644"
     remote_src: true
