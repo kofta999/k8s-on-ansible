@@ -1,0 +1,21 @@
+- name: Install containerd on Amazon Linux 2023
+  dnf:
+    name: containerd
+    state: present
+
+- name: Ensure containerd is started
+  service:
+    name: containerd
+    state: started
+    enabled: true
+
+- name: Configure containerd for SystemdCgroup
+  shell: |
+    containerd config default > /etc/containerd/config.toml
+    sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+  notify: restart containerd
+
+- name: restart containerd
+  service:
+    name: containerd
+    state: restarted

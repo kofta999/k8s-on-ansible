@@ -31,5 +31,9 @@ galaxy_info:
 
 dependencies:
   - role: geerlingguy.containerd
+    vars:
+      containerd_config_default_write: true
+      containerd_config_cgroup_driver_systemd: true
+    when: ansible_distribution != "Amazon"
   # List your role dependencies here, one per line. Be sure to remove the '[]' above,
   # if you add dependencies to this list.

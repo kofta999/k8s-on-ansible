@@ -1,3 +1,5 @@
 # Ignore downloaded Ansible roles
 /roles/geerlingguy.containerd
 tasks/init-ssh.yml
+.ansible
+inventory.ini

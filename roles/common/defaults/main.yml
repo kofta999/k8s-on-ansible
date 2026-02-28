@@ -1,3 +1,8 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # defaults file for common
+
+k8s_version: 1.35
+
+common_fw_ports:
+  - 10250/tcp

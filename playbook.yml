@@ -4,9 +4,11 @@
     - role: common
 
 - hosts: masters
+  become: true
   roles:
     - role: master
 
 - hosts: workers
+  become: true
   roles:
     - role: worker

@@ -4,3 +4,5 @@ control_node_fw_ports:
   - 10250/tcp
   - 10259/tcp
   - 10257/tcp
+  - 179/tcp
+  - 4789/udp

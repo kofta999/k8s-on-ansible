@@ -1,5 +1,14 @@
+- name: "Ensure containerd is installed on Amazon Linux"
+  import_tasks: "./amazon_containerd.yml"
+  when: ansible_distribution == "Amazon"
+
 - name: "Ensure swap is disabled"
   import_tasks: "./swap.yml"
+
+- name: Update packages
+  dnf:
+    name: "*"
+    state: latest
 
 - name: "Ensure kernel networking paramaters are configured"
   import_tasks: "./configure_kernel_params.yml"
@@ -8,6 +17,15 @@
   ansible.posix.selinux:
     state: permissive
     policy: targeted
+
+- name: "Gather service facts"
+  ansible.builtin.service_facts:
+
+- name: "Ensure firewalld is configured"
+  import_tasks: "./configure_firewalld.yml"
+  vars:
+    fw_ports: "{{ common_fw_ports }}"
+  when: "'firewalld.service' in ansible_facts.services"
 
 - name: "Ensure kubernetes is installed"
   import_tasks: "./k8s.yml"

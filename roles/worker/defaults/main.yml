@@ -3,3 +3,5 @@ worker_fw_ports:
   - 10256/tcp
   - 30000-32767/tcp
   - 30000-32767/udp
+  - 179/tcp
+  - 4789/udp

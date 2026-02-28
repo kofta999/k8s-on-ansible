@@ -1,11 +1,37 @@
+- name: "Wait for API server to be ready"
+  ansible.builtin.wait_for:
+    host: localhost
+    port: 6443
+    delay: 10
+    timeout: 120
+
+- name: "Download Calico custom resources manifest"
+  ansible.builtin.get_url:
+    url: "{{ custom_resources_url }}"
+    dest: /tmp/calico-custom-resources.yml
+    force: true
+
+- name: "Patch Calico IPPool CIDR to match kubeadm podSubnet"
+  ansible.builtin.replace:
+    path: /tmp/calico-custom-resources.yml
+    regexp: '192\.168\.0\.0/16'
+    replace: "10.244.0.0/16"
+
 - name: "Apply tigera-operator manifest"
+  become: false
   ansible.builtin.command:
     cmd: kubectl apply -f {{ tigera_operator_url }}
   register: cmd_result
   changed_when: "'configured' not in cmd_result.stdout"
 
-- name: "Apply Calico custom resources"
+- name: "Wait for tigera-operator to be ready before applying CRs"
+  become: false
   ansible.builtin.command:
-    cmd: kubectl apply -f {{ custom_resources_url }}
+    cmd: kubectl rollout status deployment tigera-operator -n tigera-operator --timeout=120s
+
+- name: "Apply patched Calico custom resources"
+  become: false
+  ansible.builtin.command:
+    cmd: kubectl apply -f /tmp/calico-custom-resources.yml
   register: cmd_result
   changed_when: "'configured' not in cmd_result.stdout"

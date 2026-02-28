@@ -8,10 +8,24 @@
     gpgkey: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/rpm/repodata/repomd.xml.key"
     exclude: ["kubelet", "kubeadm", "kubectl", "cri-tools", "kubernetes-cni"]
 
-- name: "Ensure kubernetes is installed"
+- name: "Ensure kubernetes packages are installed"
   ansible.builtin.dnf:
-    name: ["kubelet", "kubeadm", "kubectl"]
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - cri-tools
     disable_excludes: "kubernetes"
+
+- name: "Check containerd config"
+  ansible.builtin.slurp:
+    src: /etc/containerd/config.toml
+  register: containerd_config
+
+- name: "Verify containerd cgroup driver"
+  ansible.builtin.fail:
+    msg: "SystemdCgroup is not set to true in /etc/containerd/config.toml"
+  when: "'SystemdCgroup = true' not in (containerd_config.content | b64decode)"
 
 - name: "Ensure kubelet service is enabled and running"
   service:

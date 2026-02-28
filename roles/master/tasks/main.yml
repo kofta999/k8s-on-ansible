@@ -1,8 +1,12 @@
+- name: "Gather service facts"
+  ansible.builtin.service_facts:
+
 - name: "Ensure firewalld is configured for control plane"
   include_tasks:
     file: "{{ role_path }}/../common/tasks/configure_firewalld.yml"
   vars:
     fw_ports: "{{ control_node_fw_ports }}"
+  when: "'firewalld.service' in ansible_facts.services"
 
 - name: "Initalize kubeadm"
   import_tasks: "./init-kubeadm.yml"
